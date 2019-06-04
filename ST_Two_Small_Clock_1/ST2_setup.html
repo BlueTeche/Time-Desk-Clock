@@ -1,0 +1,144 @@
+<pre>
+
+
+
+
+<font color="#434f54">&#47;&#47;*******************************************************************************************************************</font>
+<font color="#434f54">&#47;&#47; &#09;&#09;&#09;&#09;&#09;&#09;&#09;&#09; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Setup</font>
+<font color="#434f54">&#47;&#47;*******************************************************************************************************************</font>
+
+<font color="#00979c">void</font> <font color="#5e6d03">setup</font><font color="#000000">(</font><font color="#000000">)</font> 
+<font color="#000000">{</font>
+ &nbsp;<b><font color="#d35400">Serial</font></b><font color="#434f54">.</font><font color="#d35400">begin</font><font color="#000000">(</font><font color="#000000">9600</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">dht</font><font color="#434f54">.</font><font color="#d35400">begin</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47;&#47;&#47;&#47;&#47;dht temperture sensor start</font>
+
+
+ &nbsp;<font color="#434f54">&#47;&#47; Rows Digital pin 0 to 7 </font>
+ &nbsp;<font color="#434f54">&#47;&#47; &nbsp;pinMode(0, OUTPUT); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#47;&#47; Not used</font>
+ &nbsp;<font color="#434f54">&#47;&#47; &nbsp;pinMode(1, OUTPUT); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#47;&#47; Not used</font>
+
+ &nbsp;<font color="#434f54">&#47;&#47; User interface Button Pins </font>
+ &nbsp;<font color="#95a5a6">&#47;*</font>
+<font color="#95a5a6"> &nbsp;digitalWrite(2, HIGH); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#47;&#47; Write a high to pin, acts as weak pull-up</font>
+<font color="#95a5a6"> &nbsp;digitalWrite(3, HIGH);</font>
+<font color="#95a5a6"> &nbsp;pinMode(2, INPUT);</font>
+<font color="#95a5a6"> &nbsp;pinMode(3, INPUT); &nbsp;</font>
+<font color="#95a5a6"> &nbsp;*&#47;</font>
+ &nbsp;
+ &nbsp;<font color="#5e6d03">#if</font> <font color="#000000">ARDUINO</font> <font color="#434f54">&gt;=</font> <font color="#000000">101</font>
+ &nbsp;<font color="#d35400">pinMode</font><font color="#000000">(</font><font color="#000000">2</font><font color="#434f54">,</font> <font color="#00979c">INPUT_PULLUP</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#d35400">pinMode</font><font color="#000000">(</font><font color="#000000">3</font><font color="#434f54">,</font> <font color="#00979c">INPUT_PULLUP</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#d35400">digitalWrite</font><font color="#000000">(</font><font color="#000000">2</font><font color="#434f54">,</font> <font color="#00979c">HIGH</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Write a high to pin, acts as weak pull-up</font>
+ &nbsp;<font color="#d35400">digitalWrite</font><font color="#000000">(</font><font color="#000000">3</font><font color="#434f54">,</font> <font color="#00979c">HIGH</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;
+ &nbsp;<font color="#5e6d03">#else</font>
+ &nbsp;<font color="#d35400">digitalWrite</font><font color="#000000">(</font><font color="#000000">2</font><font color="#434f54">,</font> <font color="#00979c">HIGH</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Write a high to pin, acts as weak pull-up</font>
+ &nbsp;<font color="#d35400">digitalWrite</font><font color="#000000">(</font><font color="#000000">3</font><font color="#434f54">,</font> <font color="#00979c">HIGH</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#d35400">pinMode</font><font color="#000000">(</font><font color="#000000">2</font><font color="#434f54">,</font> <font color="#00979c">INPUT</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#d35400">pinMode</font><font color="#000000">(</font><font color="#000000">3</font><font color="#434f54">,</font> <font color="#00979c">INPUT</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;
+ &nbsp;<font color="#5e6d03">#endif</font>
+
+ &nbsp;<font color="#434f54">&#47;&#47; Column address bits 4 to 16 decode &nbsp;&nbsp;&nbsp;</font>
+ &nbsp;<font color="#d35400">pinMode</font><font color="#000000">(</font><font color="#000000">4</font><font color="#434f54">,</font> <font color="#00979c">OUTPUT</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; DeMux A</font>
+ &nbsp;<font color="#d35400">pinMode</font><font color="#000000">(</font><font color="#000000">5</font><font color="#434f54">,</font> <font color="#00979c">OUTPUT</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; DeMux B</font>
+ &nbsp;<font color="#d35400">pinMode</font><font color="#000000">(</font><font color="#000000">6</font><font color="#434f54">,</font> <font color="#00979c">OUTPUT</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; DeMux C</font>
+ &nbsp;<font color="#d35400">pinMode</font><font color="#000000">(</font><font color="#000000">7</font><font color="#434f54">,</font> <font color="#00979c">OUTPUT</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; DeMux D </font>
+
+ &nbsp;<font color="#95a5a6">&#47;*</font>
+<font color="#95a5a6"> &nbsp;&#47;&#47; </font>
+<font color="#95a5a6"> &nbsp;&nbsp;pinMode(8, OUTPUT); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#47;&#47; ROW 1</font>
+<font color="#95a5a6"> &nbsp;&nbsp;pinMode(9, OUTPUT); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#47;&#47; ROW 2</font>
+<font color="#95a5a6"> &nbsp;&nbsp;pinMode(10, OUTPUT); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#47;&#47; ROW 3</font>
+<font color="#95a5a6"> &nbsp;&nbsp;pinMode(11, OUTPUT); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#47;&#47; ROW 4</font>
+<font color="#95a5a6"> &nbsp;&nbsp;pinMode(12, OUTPUT); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#47;&#47; ROW 5</font>
+<font color="#95a5a6"> &nbsp;&nbsp;pinMode(13, OUTPUT); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#47;&#47; ROW 6</font>
+<font color="#95a5a6"> &nbsp;&nbsp;</font>
+<font color="#95a5a6"> &nbsp;&nbsp;&#47;&#47; Make these pins outputs (Was the crystal Pins) &nbsp;&nbsp;B6 = Row 7, B7 = demux select</font>
+<font color="#95a5a6"> &nbsp;&nbsp;DDRB = (1&lt;&lt;DDB7)|(1&lt;&lt;DDB6); &nbsp;</font>
+<font color="#95a5a6"> &nbsp;&nbsp;*&#47;</font>
+
+ &nbsp;<font color="#434f54">&#47;&#47;test with</font>
+ &nbsp;<font color="#000000">DDRB</font> <font color="#434f54">=</font> <font color="#000000">(</font><font color="#000000">1</font><font color="#434f54">&lt;&lt;</font><font color="#000000">DDB7</font><font color="#000000">)</font><font color="#434f54">|</font><font color="#000000">(</font><font color="#000000">1</font><font color="#434f54">&lt;&lt;</font><font color="#000000">DDB6</font><font color="#000000">)</font><font color="#434f54">|</font><font color="#000000">(</font><font color="#000000">1</font><font color="#434f54">&lt;&lt;</font><font color="#000000">DDB5</font><font color="#000000">)</font><font color="#434f54">|</font><font color="#000000">(</font><font color="#000000">1</font><font color="#434f54">&lt;&lt;</font><font color="#000000">DDB4</font><font color="#000000">)</font><font color="#434f54">|</font><font color="#000000">(</font><font color="#000000">1</font><font color="#434f54">&lt;&lt;</font><font color="#000000">DDB3</font><font color="#000000">)</font><font color="#434f54">|</font><font color="#000000">(</font><font color="#000000">1</font><font color="#434f54">&lt;&lt;</font><font color="#000000">DDB2</font><font color="#000000">)</font><font color="#434f54">|</font><font color="#000000">(</font><font color="#000000">1</font><font color="#434f54">&lt;&lt;</font><font color="#000000">DDB1</font><font color="#000000">)</font><font color="#434f54">|</font><font color="#000000">(</font><font color="#000000">1</font><font color="#434f54">&lt;&lt;</font><font color="#000000">DDB0</font><font color="#000000">)</font><font color="#000000">;</font> 
+
+
+ &nbsp;<font color="#434f54">&#47;&#47; Make these pins outputs (analog 0 to 3)</font>
+ &nbsp;<font color="#000000">DDRC</font> <font color="#434f54">=</font> <font color="#000000">DDRC</font> <font color="#434f54">|</font> <font color="#000000">1</font> <font color="#434f54">&lt;&lt;</font> <font color="#000000">PORTC0</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Column 17</font>
+ &nbsp;<font color="#000000">DDRC</font> <font color="#434f54">=</font> <font color="#000000">DDRC</font> <font color="#434f54">|</font> <font color="#000000">1</font> <font color="#434f54">&lt;&lt;</font> <font color="#000000">PORTC1</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Column 18</font>
+ &nbsp;<font color="#000000">DDRC</font> <font color="#434f54">=</font> <font color="#000000">DDRC</font> <font color="#434f54">|</font> <font color="#000000">1</font> <font color="#434f54">&lt;&lt;</font> <font color="#000000">PORTC2</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Column 19</font>
+ &nbsp;<font color="#000000">DDRC</font> <font color="#434f54">=</font> <font color="#000000">DDRC</font> <font color="#434f54">|</font> <font color="#000000">1</font> <font color="#434f54">&lt;&lt;</font> <font color="#000000">PORTC3</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Column 20</font>
+
+
+
+
+ &nbsp;<font color="#434f54">&#47;&#47; attachInterrupt(0, MinuteUP, FALLING);</font>
+ &nbsp;<font color="#434f54">&#47;&#47; attachInterrupt(1, MinuteDOWN, FALLING);</font>
+
+ &nbsp;<font color="#434f54">&#47;&#47; Turn one Interupts, used to update the displayed LED matrix</font>
+ &nbsp;<font color="#000000">Timer1</font><font color="#434f54">.</font><font color="#000000">initialize</font><font color="#000000">(</font><font color="#000000">100</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; was 100</font>
+ &nbsp;<font color="#434f54">&#47;&#47; &nbsp;&nbsp;Timer1.attachInterrupt(LEDupdate);</font>
+ &nbsp;<font color="#000000">Timer1</font><font color="#434f54">.</font><font color="#d35400">attachInterrupt</font><font color="#000000">(</font><font color="#000000">LEDupdateTHREE</font><font color="#000000">)</font><font color="#000000">;</font> 
+
+
+ &nbsp;<font color="#434f54">&#47;&#47; I2C Inits</font>
+ &nbsp;<font color="#d35400">Wire</font><font color="#434f54">.</font><font color="#d35400">begin</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;
+ &nbsp;
+ &nbsp;<font color="#434f54">&#47;&#47; Power Reduction - S</font>
+ &nbsp;<font color="#000000">power_adc_disable</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">power_spi_disable</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">power_usart0_disable</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">;</font>
+<font color="#434f54">&#47;&#47; &nbsp;</font>
+<font color="#434f54">&#47;&#47; &nbsp;power_timer0_disable(); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#47;&#47; Seems required (for delay ?)</font>
+<font color="#434f54">&#47;&#47; &nbsp;power_timer2_disable(); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#47;&#47; Seems required for tone (crashes without)</font>
+
+ &nbsp;
+ &nbsp;<font color="#000000">wdt_disable</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">;</font>
+ 
+ <font color="#434f54">&#47;&#47;Special </font>
+ <font color="#434f54">&#47;&#47;power_all_disable();</font>
+ <font color="#434f54">&#47;&#47;power_timer1_disable(); </font>
+ 
+ &nbsp;<font color="#434f54">&#47;&#47; Power Reduction - E</font>
+
+ &nbsp;<font color="#434f54">&#47;&#47; Program specific inits</font>
+ &nbsp;<font color="#434f54">&#47;&#47; &nbsp;fillmatrix();</font>
+ &nbsp;<font color="#d35400">delay</font><font color="#000000">(</font><font color="#000000">300</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">bval</font> <font color="#434f54">=</font> <font color="#434f54">!</font><font color="#d35400">digitalRead</font><font color="#000000">(</font><font color="#000000">SETBUTTON</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">bval</font><font color="#000000">)</font>
+ &nbsp;<font color="#000000">{</font>
+ &nbsp;<font color="#000000">lamptest</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">}</font>
+ &nbsp;
+ &nbsp;<font color="#000000">displayString</font><font color="#000000">(</font><font color="#005c5f">&#34;v2.9&#34;</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#d35400">delay</font><font color="#000000">(</font><font color="#000000">1500</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">clearmatrix</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;
+<font color="#434f54">&#47;&#47; &nbsp;&nbsp;SetStartTime(); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#47;&#47; Basic start time of 12:00 PM</font>
+ &nbsp;&nbsp;<font color="#000000">SetAlarmTime</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">;</font> <font color="#434f54">&#47;&#47; for testing</font>
+ &nbsp;&nbsp;<font color="#000000">EnableAlarm1</font><font color="#000000">(</font><font color="#00979c">false</font><font color="#000000">)</font><font color="#000000">;</font> <font color="#434f54">&#47;&#47; for testing</font>
+ &nbsp;&nbsp;
+ &nbsp;&nbsp;<font color="#000000">SleepTimer</font> <font color="#434f54">=</font> <font color="#d35400">millis</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">;</font>
+<font color="#434f54">&#47;&#47;&#47;&#47;&#47;</font>
+<font color="#00979c">String</font> <font color="#000000">setName</font> <font color="#434f54">=</font> <font color="#00979c">String</font><font color="#000000">(</font><font color="#005c5f">&#34;AT+NAME=MyBTBee\r\n&#34;</font><font color="#000000">)</font><font color="#000000">;</font> <font color="#434f54">&#47;&#47;Setting name as &#39;MyBTBee&#39;</font>
+ &nbsp;<b><font color="#d35400">Serial</font></b><font color="#434f54">.</font><font color="#d35400">begin</font><font color="#000000">(</font><font color="#000000">9600</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">BTSerial</font><font color="#434f54">.</font><font color="#d35400">begin</font><font color="#000000">(</font><font color="#000000">38400</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">BTSerial</font><font color="#434f54">.</font><font color="#d35400">print</font><font color="#000000">(</font><font color="#005c5f">&#34;AT\r\n&#34;</font><font color="#000000">)</font><font color="#000000">;</font> <font color="#434f54">&#47;&#47;Check Status</font>
+ &nbsp;<font color="#d35400">delay</font><font color="#000000">(</font><font color="#000000">500</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#5e6d03">while</font> <font color="#000000">(</font><font color="#000000">BTSerial</font><font color="#434f54">.</font><font color="#d35400">available</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">)</font> <font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><font color="#d35400">Serial</font></b><font color="#434f54">.</font><font color="#d35400">write</font><font color="#000000">(</font><font color="#000000">BTSerial</font><font color="#434f54">.</font><font color="#d35400">read</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+ &nbsp;<font color="#000000">BTSerial</font><font color="#434f54">.</font><font color="#d35400">print</font><font color="#000000">(</font><font color="#000000">setName</font><font color="#000000">)</font><font color="#000000">;</font> <font color="#434f54">&#47;&#47;Send Command to change the name</font>
+ &nbsp;<font color="#d35400">delay</font><font color="#000000">(</font><font color="#000000">500</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#5e6d03">while</font> <font color="#000000">(</font><font color="#000000">BTSerial</font><font color="#434f54">.</font><font color="#d35400">available</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">)</font> <font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><font color="#d35400">Serial</font></b><font color="#434f54">.</font><font color="#d35400">write</font><font color="#000000">(</font><font color="#000000">BTSerial</font><font color="#434f54">.</font><font color="#d35400">read</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font><font color="#000000">}</font>
+
+
+ &nbsp;&nbsp;
+<font color="#434f54">&#47;&#47;&#47;&#47;&#47;&#47;&#47;&#47;&#47;&#47;&#47;&#47;&#47;&#47;&#47;&#47;&#47;&#47;&#47;&#47;&#47;&#47;&#47;&#47;&#47;&#47;&#47;&#47;&#47;&#47;&#47;&#47;&#47;&#47;</font>
+ <font color="#000000">myservo</font><font color="#434f54">.</font><font color="#d35400">attach</font><font color="#000000">(</font><font color="#000000">PD7</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;<font color="#434f54">&#47;&#47; attaches the servo on pin PB7 to the servo object</font>
+
+ &nbsp;<font color="#000000">}</font>
+
+ 
+
+</pre>

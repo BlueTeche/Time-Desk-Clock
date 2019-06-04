@@ -1,0 +1,171 @@
+<pre>
+ <font color="#434f54">&#47;&#47;*******************************************************************************************************************</font>
+<font color="#434f54">&#47;&#47; &#09;&#09;&#09;&#09;&#09;&#09;Called by Timer 1 Interrupt to draw next column in LED matrix</font>
+<font color="#434f54">&#47;&#47;*******************************************************************************************************************</font>
+<font color="#434f54">&#47;&#47; Only light one ROW (and one column) ie one pixel at a time. = lower current draw, but lower refresh rate.</font>
+
+
+<font color="#00979c">void</font> <font color="#000000">LEDupdateTWO</font><font color="#000000">(</font><font color="#000000">)</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; ONE ROW of selected column at a time</font>
+<font color="#000000">{</font> &nbsp;
+
+ &nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">ROWBITINDEX</font> <font color="#434f54">&gt;</font><font color="#000000">6</font><font color="#000000">)</font>
+ &nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">Mcolumn</font> <font color="#434f54">=</font> <font color="#000000">Mcolumn</font><font color="#434f54">+</font><font color="#000000">1</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Prep for next column</font>
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">Mcolumn</font> <font color="#434f54">&gt;</font><font color="#000000">19</font><font color="#000000">)</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">Mcolumn</font> <font color="#434f54">=</font><font color="#000000">0</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+
+ &nbsp;&nbsp;&nbsp;<font color="#000000">PORTB</font> <font color="#434f54">=</font> <font color="#000000">(</font><font color="#000000">PORTB</font> <font color="#434f54">&amp;</font> <font color="#000000">B10000000</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Clear last column</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">PORTC</font> <font color="#434f54">=</font> <font color="#000000">(</font><font color="#000000">PORTC</font> <font color="#434f54">&amp;</font> <font color="#000000">B11110000</font><font color="#000000">)</font> <font color="#434f54">|</font> <font color="#000000">B00001111</font><font color="#000000">;</font>
+
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">Mcolumn</font> <font color="#434f54">&lt;</font><font color="#000000">16</font><font color="#000000">)</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Matrix column (from 0 to 19)</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">PORTB</font> <font color="#434f54">=</font> <font color="#000000">(</font><font color="#000000">PORTB</font> <font color="#434f54">&amp;</font> <font color="#000000">B01111111</font><font color="#000000">)</font><font color="#000000">;</font> <font color="#434f54">&#47;&#47;| (0&lt;&lt;PORTB7); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#47;&#47; Decode digit Col. 1 to 16 - Select De-Mux chip</font>
+
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">PORTD</font> <font color="#434f54">=</font> <font color="#000000">(</font><font color="#000000">PORTD</font> <font color="#434f54">&amp;</font> <font color="#000000">B00001111</font><font color="#000000">)</font> <font color="#434f54">|</font> <font color="#000000">(</font><font color="#000000">Mcolumn</font> <font color="#434f54">&lt;&lt;</font> <font color="#000000">4</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Decode address to 74HC154</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">else</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">PORTB</font> <font color="#434f54">=</font> &nbsp;<font color="#000000">(</font><font color="#000000">1</font><font color="#434f54">&lt;&lt;</font><font color="#000000">PORTB7</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Decode digit Col. 17 to 20 - UN-Select De-Mux chip</font>
+
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">PORTC</font> <font color="#434f54">=</font> <font color="#000000">(</font><font color="#000000">PORTC</font> <font color="#434f54">&amp;</font> <font color="#000000">B11110000</font><font color="#000000">)</font> <font color="#434f54">|</font> <font color="#434f54">~</font><font color="#000000">(</font><font color="#000000">1</font><font color="#434f54">&lt;&lt;</font><font color="#000000">(</font><font color="#000000">Mcolumn</font><font color="#434f54">-</font><font color="#000000">16</font><font color="#000000">)</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Using PC0 to PC4 to address col. 17 to 20 directly</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+
+ &nbsp;&nbsp;&nbsp;<font color="#000000">ROWBITINDEX</font> <font color="#434f54">=</font> <font color="#000000">0</font><font color="#000000">;</font>
+
+ &nbsp;<font color="#000000">}</font>
+ &nbsp;<font color="#5e6d03">else</font>
+ &nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">PORTB</font> <font color="#434f54">=</font> <font color="#000000">(</font><font color="#000000">PORTB</font> <font color="#434f54">&amp;</font> <font color="#000000">B10000000</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#d35400">bitRead</font><font color="#000000">(</font><font color="#000000">LEDMAT</font><font color="#000000">[</font><font color="#000000">Mcolumn</font><font color="#000000">]</font><font color="#434f54">,</font><font color="#000000">ROWBITINDEX</font><font color="#000000">)</font><font color="#000000">)</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PORTB = (PORTB &amp; B10000000);</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#d35400">bitSet</font><font color="#000000">(</font><font color="#000000">PORTB</font><font color="#434f54">,</font><font color="#000000">ROWBITINDEX</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">Mcolumn</font> <font color="#434f54">&lt;</font><font color="#000000">16</font><font color="#000000">)</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Matrix column (from 0 to 19)</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#d35400">delayMicroseconds</font><font color="#000000">(</font><font color="#000000">120</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+ &nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; &nbsp;&nbsp;&nbsp;else</font>
+ &nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; &nbsp;&nbsp;&nbsp;{</font>
+ &nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; &nbsp;&nbsp;bitClear(PORTB,ROWBITINDEX);</font>
+ &nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; &nbsp;&nbsp;&nbsp;}</font>
+
+ &nbsp;&nbsp;&nbsp;<font color="#000000">ROWBITINDEX</font> <font color="#434f54">=</font> <font color="#000000">ROWBITINDEX</font> <font color="#434f54">+</font><font color="#000000">1</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">}</font>
+<font color="#000000">}</font>
+
+<font color="#434f54">&#47;&#47;*******************************************************************************************************************</font>
+<font color="#434f54">&#47;&#47; &#09;&#09;&#09;&#09;&#09;&#09;Called by Timer 1 Interrupt to draw next column in LED matrix</font>
+<font color="#434f54">&#47;&#47;*******************************************************************************************************************</font>
+<font color="#434f54">&#47;&#47; This version of LED refresh &#47; drawing lights full column at once = higher current draw (but can be brighter)</font>
+
+<font color="#00979c">void</font> <font color="#000000">LEDupdate</font><font color="#000000">(</font><font color="#000000">)</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; All ROWs of selected column at the same time</font>
+<font color="#000000">{</font> &nbsp;
+
+ &nbsp;<font color="#000000">PORTB</font> <font color="#434f54">=</font> <font color="#000000">(</font><font color="#000000">PORTB</font> <font color="#434f54">&amp;</font> <font color="#000000">B10000000</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Clear last column</font>
+ &nbsp;<font color="#000000">PORTC</font> <font color="#434f54">=</font> <font color="#000000">(</font><font color="#000000">PORTC</font> <font color="#434f54">&amp;</font> <font color="#000000">B11110000</font><font color="#000000">)</font> <font color="#434f54">|</font> <font color="#000000">B00001111</font><font color="#000000">;</font>
+
+ &nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">Mcolumn</font> <font color="#434f54">&lt;</font><font color="#000000">16</font><font color="#000000">)</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Matrix column (from 0 to 19)</font>
+ &nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">PORTB</font> <font color="#434f54">=</font> <font color="#000000">(</font><font color="#000000">PORTB</font> <font color="#434f54">&amp;</font> <font color="#000000">B01111111</font><font color="#000000">)</font><font color="#000000">;</font> <font color="#434f54">&#47;&#47;| (0&lt;&lt;PORTB7); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#47;&#47; Decode digit Col. 1 to 16 - Select De-Mux chip</font>
+
+ &nbsp;&nbsp;&nbsp;<font color="#000000">PORTD</font> <font color="#434f54">=</font> <font color="#000000">(</font><font color="#000000">PORTD</font> <font color="#434f54">&amp;</font> <font color="#000000">B00001111</font><font color="#000000">)</font> <font color="#434f54">|</font> <font color="#000000">(</font><font color="#000000">Mcolumn</font> <font color="#434f54">&lt;&lt;</font> <font color="#000000">4</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Decode address to 74HC154</font>
+ &nbsp;<font color="#000000">}</font>
+ &nbsp;<font color="#5e6d03">else</font>
+ &nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">PORTB</font> <font color="#434f54">=</font> &nbsp;<font color="#000000">(</font><font color="#000000">1</font><font color="#434f54">&lt;&lt;</font><font color="#000000">PORTB7</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Decode digit Col. 17 to 20 - UN-Select De-Mux chip</font>
+
+ &nbsp;&nbsp;&nbsp;<font color="#000000">PORTC</font> <font color="#434f54">=</font> <font color="#000000">(</font><font color="#000000">PORTC</font> <font color="#434f54">&amp;</font> <font color="#000000">B11110000</font><font color="#000000">)</font> <font color="#434f54">|</font> <font color="#434f54">~</font><font color="#000000">(</font><font color="#000000">1</font><font color="#434f54">&lt;&lt;</font><font color="#000000">(</font><font color="#000000">Mcolumn</font><font color="#434f54">-</font><font color="#000000">16</font><font color="#000000">)</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Using PC0 to PC4 to address col. 17 to 20 directly</font>
+ &nbsp;<font color="#000000">}</font>
+
+ &nbsp;<font color="#434f54">&#47;&#47; --- &nbsp;</font>
+
+ &nbsp;<font color="#000000">PORTB</font> <font color="#434f54">=</font> <font color="#000000">(</font><font color="#000000">PORTB</font> <font color="#434f54">&amp;</font> <font color="#000000">B10000000</font><font color="#000000">)</font> <font color="#434f54">|</font> <font color="#000000">(</font><font color="#000000">LEDMAT</font><font color="#000000">[</font><font color="#000000">Mcolumn</font><font color="#000000">]</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Light LEDs - turn on ROWs</font>
+
+ &nbsp;<font color="#434f54">&#47;&#47; ---</font>
+
+ &nbsp;<font color="#000000">Mcolumn</font> <font color="#434f54">=</font> <font color="#000000">Mcolumn</font><font color="#434f54">+</font><font color="#000000">1</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Prep for next column</font>
+ &nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">Mcolumn</font> <font color="#434f54">&gt;</font><font color="#000000">19</font><font color="#000000">)</font>
+ &nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">Mcolumn</font> <font color="#434f54">=</font><font color="#000000">0</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">}</font>
+<font color="#000000">}</font>
+
+<font color="#434f54">&#47;&#47;*******************************************************************************************************************</font>
+<font color="#434f54">&#47;&#47; &#09;&#09;&#09;&#09;&#09;&#09; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Used by STII Small Desk Clock</font>
+<font color="#434f54">&#47;&#47;*******************************************************************************************************************</font>
+<font color="#434f54">&#47;&#47; Only light one ROW (and one column) ie one pixel at a time. = lower current draw, but lower refresh rate.</font>
+
+
+<font color="#434f54">&#47;&#47; Where:</font>
+<font color="#434f54">&#47;&#47; PORTC2 - S1 (ADC1)</font>
+<font color="#434f54">&#47;&#47; PORTC3 - S2 (ADC2)</font>
+<font color="#434f54">&#47;&#47; When S1=H and S2=L Decoder 1 = Selected</font>
+<font color="#434f54">&#47;&#47; When S1=L and S2=H Decoder 2 = Selected</font>
+<font color="#434f54">&#47;&#47; When S1=L and S2=L Decoder 3 = Selected</font>
+<font color="#434f54">&#47;&#47; When S1=H and S2=H None Selected = all columns are OFF</font>
+
+<font color="#434f54">&#47;&#47; PORTD4 - A</font>
+<font color="#434f54">&#47;&#47; PORTD5 - B</font>
+<font color="#434f54">&#47;&#47; PORTD6 - C</font>
+<font color="#434f54">&#47;&#47; PORTD7 - Free pin (only with the &#34;Small desk clock&#34;)</font>
+
+<font color="#434f54">&#47;&#47; PORTB 0 to 6 = ROWS 1 to 7</font>
+
+<font color="#00979c">void</font> <font color="#000000">LEDupdateTHREE</font><font color="#000000">(</font><font color="#000000">)</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; ONE ROW of selected column at a time</font>
+<font color="#000000">{</font> &nbsp;
+
+ &nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">ROWBITINDEX</font> <font color="#434f54">&gt;</font><font color="#000000">6</font><font color="#000000">)</font>
+ &nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">ROWBITINDEX</font> <font color="#434f54">=</font> <font color="#000000">0</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;
+ &nbsp;&nbsp;&nbsp;<font color="#000000">Mcolumn</font> <font color="#434f54">=</font> <font color="#000000">Mcolumn</font><font color="#434f54">+</font><font color="#000000">1</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Prep for next column</font>
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">Mcolumn</font> <font color="#434f54">&gt;</font><font color="#000000">19</font><font color="#000000">)</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">Mcolumn</font> <font color="#434f54">=</font><font color="#000000">0</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+
+<font color="#434f54">&#47;&#47; &nbsp;&nbsp;&nbsp;PORTB = (PORTB &amp; B10000000); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#47;&#47; Clear last column</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">PORTB</font> <font color="#434f54">=</font> <font color="#000000">(</font><font color="#000000">PORTB</font> <font color="#434f54">&amp;</font> <font color="#000000">B10000000</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">PORTC</font> <font color="#434f54">=</font> <font color="#000000">(</font><font color="#000000">PORTC</font> <font color="#434f54">&amp;</font> <font color="#000000">B11110011</font><font color="#000000">)</font> <font color="#434f54">|</font> <font color="#000000">B00001100</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Turn off decoders</font>
+ &nbsp;&nbsp;&nbsp;
+
+
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">Mcolumn</font> <font color="#434f54">&lt;</font> <font color="#000000">8</font><font color="#000000">)</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Matrix column (from 0 to 7)</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">PORTD</font> <font color="#434f54">=</font> <font color="#000000">(</font><font color="#000000">PORTD</font> <font color="#434f54">&amp;</font> <font color="#000000">B10001111</font><font color="#000000">)</font> <font color="#434f54">|</font> <font color="#000000">(</font><font color="#000000">Mcolumn</font> <font color="#434f54">&lt;&lt;</font> <font color="#000000">4</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Decode address to 74HC138</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">PORTC</font> <font color="#434f54">=</font> <font color="#000000">(</font><font color="#000000">PORTC</font> <font color="#434f54">&amp;</font> <font color="#000000">B11110011</font><font color="#000000">)</font> <font color="#434f54">|</font> <font color="#000000">B00000100</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Select Chip 1</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+ &nbsp;&nbsp;&nbsp;
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">Mcolumn</font> <font color="#434f54">&gt;</font> <font color="#000000">7</font> <font color="#434f54">&amp;&amp;</font> <font color="#000000">Mcolumn</font> <font color="#434f54">&lt;</font> <font color="#000000">16</font><font color="#000000">)</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">PORTD</font> <font color="#434f54">=</font> <font color="#000000">(</font><font color="#000000">PORTD</font> <font color="#434f54">&amp;</font> <font color="#000000">B10001111</font><font color="#000000">)</font> <font color="#434f54">|</font> <font color="#000000">(</font><font color="#000000">(</font><font color="#000000">Mcolumn</font> <font color="#434f54">-</font> <font color="#000000">8</font><font color="#000000">)</font> <font color="#434f54">&lt;&lt;</font> <font color="#000000">4</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Decode address to 74HC138</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">PORTC</font> <font color="#434f54">=</font> <font color="#000000">(</font><font color="#000000">PORTC</font> <font color="#434f54">&amp;</font> <font color="#000000">B11110011</font><font color="#000000">)</font> <font color="#434f54">|</font> <font color="#000000">B00001000</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Select Chip 2</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">Mcolumn</font> <font color="#434f54">&gt;</font> <font color="#000000">15</font><font color="#000000">)</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">PORTD</font> <font color="#434f54">=</font> <font color="#000000">(</font><font color="#000000">PORTD</font> <font color="#434f54">&amp;</font> <font color="#000000">B10001111</font><font color="#000000">)</font> <font color="#434f54">|</font> <font color="#000000">(</font><font color="#000000">(</font><font color="#000000">Mcolumn</font> <font color="#434f54">-</font> <font color="#000000">16</font><font color="#000000">)</font> <font color="#434f54">&lt;&lt;</font> <font color="#000000">4</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Decode address to 74HC138</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">PORTC</font> <font color="#434f54">=</font> <font color="#000000">(</font><font color="#000000">PORTC</font> <font color="#434f54">&amp;</font> <font color="#000000">B11110011</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Select Chip 3</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+ &nbsp;<font color="#000000">}</font>
+ &nbsp;<font color="#5e6d03">else</font>
+ &nbsp;<font color="#000000">{</font>
+<font color="#434f54">&#47;&#47; &nbsp;&nbsp;&nbsp;PORTB = (PORTB &amp; B10000000);</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">PORTB</font> <font color="#434f54">=</font> <font color="#000000">(</font><font color="#000000">PORTB</font> <font color="#434f54">&amp;</font> <font color="#000000">B10000000</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#d35400">bitRead</font><font color="#000000">(</font><font color="#000000">LEDMAT</font><font color="#000000">[</font><font color="#000000">Mcolumn</font><font color="#000000">]</font><font color="#434f54">,</font><font color="#000000">ROWBITINDEX</font><font color="#000000">)</font><font color="#000000">)</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PORTB = (PORTB &amp; B10000000);</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#d35400">bitSet</font><font color="#000000">(</font><font color="#000000">PORTB</font><font color="#434f54">,</font><font color="#000000">ROWBITINDEX</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+
+ &nbsp;&nbsp;&nbsp;<font color="#000000">ROWBITINDEX</font> <font color="#434f54">=</font> <font color="#000000">ROWBITINDEX</font> <font color="#434f54">+</font><font color="#000000">1</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;
+ &nbsp;&nbsp;&nbsp;<font color="#d35400">delayMicroseconds</font><font color="#000000">(</font><font color="#000000">50</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Test to see if this makes LEDs brighter</font>
+ &nbsp;<font color="#000000">}</font>
+<font color="#000000">}</font>
+
+</pre>

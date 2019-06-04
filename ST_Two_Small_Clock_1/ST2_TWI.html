@@ -1,0 +1,27 @@
+<pre>
+<font color="#434f54">&#47;&#47;*******************************************************************************************************************</font>
+<font color="#434f54">&#47;&#47; &#09;&#09;&#09;&#09;&#09;&#09;&#09;&#09; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;I2C TX RX</font>
+<font color="#434f54">&#47;&#47;*******************************************************************************************************************</font>
+<font color="#00979c">void</font> <font color="#000000">I2C_TX</font><font color="#000000">(</font><font color="#00979c">byte</font> <font color="#000000">device</font><font color="#434f54">,</font> <font color="#00979c">byte</font> <font color="#000000">regadd</font><font color="#434f54">,</font> <font color="#00979c">byte</font> <font color="#000000">tx_data</font><font color="#000000">)</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Transmit I2C Data</font>
+<font color="#000000">{</font>
+ &nbsp;<font color="#d35400">Wire</font><font color="#434f54">.</font><font color="#d35400">beginTransmission</font><font color="#000000">(</font><font color="#000000">device</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#d35400">Wire</font><font color="#434f54">.</font><font color="#d35400">write</font><font color="#000000">(</font><font color="#000000">regadd</font><font color="#000000">)</font><font color="#000000">;</font> 
+ &nbsp;<font color="#d35400">Wire</font><font color="#434f54">.</font><font color="#d35400">write</font><font color="#000000">(</font><font color="#000000">tx_data</font><font color="#000000">)</font><font color="#000000">;</font> 
+ &nbsp;<font color="#d35400">Wire</font><font color="#434f54">.</font><font color="#d35400">endTransmission</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">;</font>
+<font color="#000000">}</font>
+
+<font color="#00979c">void</font> <font color="#000000">I2C_RX</font><font color="#000000">(</font><font color="#00979c">byte</font> <font color="#000000">devicerx</font><font color="#434f54">,</font> <font color="#00979c">byte</font> <font color="#000000">regaddrx</font><font color="#000000">)</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Receive I2C Data</font>
+<font color="#000000">{</font>
+ &nbsp;<font color="#d35400">Wire</font><font color="#434f54">.</font><font color="#d35400">beginTransmission</font><font color="#000000">(</font><font color="#000000">devicerx</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#d35400">Wire</font><font color="#434f54">.</font><font color="#d35400">write</font><font color="#000000">(</font><font color="#000000">regaddrx</font><font color="#000000">)</font><font color="#000000">;</font> 
+ &nbsp;<font color="#d35400">Wire</font><font color="#434f54">.</font><font color="#d35400">endTransmission</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#d35400">Wire</font><font color="#434f54">.</font><font color="#d35400">requestFrom</font><font color="#000000">(</font><font color="#00979c">int</font><font color="#000000">(</font><font color="#000000">devicerx</font><font color="#000000">)</font><font color="#434f54">,</font> <font color="#000000">1</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;
+
+ &nbsp;<font color="#00979c">byte</font> <font color="#000000">c</font> <font color="#434f54">=</font> <font color="#000000">0</font><font color="#000000">;</font>
+ &nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#d35400">Wire</font><font color="#434f54">.</font><font color="#d35400">available</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">)</font>
+ &nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">i2cData</font> <font color="#434f54">=</font> <font color="#d35400">Wire</font><font color="#434f54">.</font><font color="#d35400">read</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;
+ &nbsp;<font color="#000000">}</font>
+<font color="#000000">}</font>
+
+</pre>

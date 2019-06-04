@@ -1,0 +1,139 @@
+<pre>
+<font color="#434f54">&#47;&#47;*******************************************************************************************************************</font>
+<font color="#434f54">&#47;&#47; &#09;&#09;&#09;&#09;&#09;&#09;&#09;&#09; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Enter Sleep Mode</font>
+<font color="#434f54">&#47;&#47;*******************************************************************************************************************</font>
+
+<font color="#00979c">void</font> <font color="#000000">GoToSleep</font><font color="#000000">(</font><font color="#000000">)</font>
+<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; &nbsp;SLEEP_MODE_EXT_STANDBY</font>
+
+ &nbsp;&nbsp;<font color="#434f54">&#47;&#47; PORTB = (PORTB &amp; B10000000); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#47;&#47; Clear ROWs and De-select Demux chip</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">UltraPowerDown</font><font color="#000000">(</font><font color="#00979c">false</font><font color="#000000">)</font><font color="#000000">;</font>
+
+ &nbsp;&nbsp;&nbsp;<font color="#d35400">attachInterrupt</font><font color="#000000">(</font><font color="#000000">0</font><font color="#434f54">,</font> <font color="#000000">MinuteUP</font><font color="#434f54">,</font> <font color="#00979c">FALLING</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">set_sleep_mode</font><font color="#000000">(</font><font color="#000000">SLEEP_MODE_PWR_DOWN</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; &nbsp;&nbsp;was &nbsp;&nbsp;(SLEEP_MODE_EXT_STANDBY);</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">cli</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (some_condition)</font>
+ &nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">sleep_enable</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sleep_bod_disable();</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">sei</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">sleep_cpu</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">;</font>
+<font color="#434f54">&#47;&#47; &nbsp;&nbsp;&nbsp;_NOP();</font>
+<font color="#434f54">&#47;&#47; &nbsp;&nbsp;&nbsp;_NOP();</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">sleep_disable</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">sei</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">;</font>
+
+ &nbsp;&nbsp;&nbsp;<font color="#d35400">detachInterrupt</font><font color="#000000">(</font><font color="#000000">0</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;
+ &nbsp;&nbsp;&nbsp;<font color="#000000">UltraPowerDown</font><font color="#000000">(</font><font color="#00979c">true</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;
+ &nbsp;&nbsp;&nbsp;<font color="#000000">blinkFlag</font> <font color="#434f54">=</font> <font color="#00979c">false</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Incase sleep started during time set</font>
+<font color="#434f54">&#47;&#47; &nbsp;&nbsp;&nbsp;MODEOVERRIDEFLAG = false;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">NextStateFlag</font> <font color="#434f54">=</font> <font color="#00979c">false</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;
+ &nbsp;&nbsp;&nbsp;<font color="#000000">NextStateRequest</font> <font color="#434f54">=</font> <font color="#00979c">false</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">NextSUBStateRequest</font> <font color="#434f54">=</font> <font color="#00979c">false</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;
+ &nbsp;&nbsp;&nbsp;<font color="#000000">SetTimeFlag</font> <font color="#434f54">=</font> <font color="#00979c">false</font><font color="#000000">;</font>
+<font color="#434f54">&#47;&#47; &nbsp;&nbsp;&nbsp;SetDigit = 4;</font>
+ &nbsp;&nbsp;&nbsp;
+ &nbsp;&nbsp;&nbsp;<font color="#000000">STATE</font> <font color="#434f54">=</font> <font color="#000000">0</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">SUBSTATE</font> <font color="#434f54">=</font> <font color="#000000">0</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">JustWokeUpFlag</font> <font color="#434f54">=</font> <font color="#00979c">true</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;
+<font color="#434f54">&#47;&#47; &nbsp;&nbsp;&nbsp;CheckAlarm();</font>
+ <font color="#434f54">&#47;&#47; &nbsp;&nbsp;if(ALARM1FLAG)</font>
+<font color="#434f54">&#47;&#47; &nbsp;&nbsp;&nbsp;{</font>
+<font color="#434f54">&#47;&#47; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ALARM1FLAG = false;</font>
+<font color="#434f54">&#47;&#47; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EnableAlarm1(false);</font>
+<font color="#434f54">&#47;&#47; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;STATE = 90;</font>
+<font color="#434f54">&#47;&#47; &nbsp;&nbsp;&nbsp;}</font>
+ &nbsp;&nbsp;&nbsp;
+<font color="#434f54">&#47;&#47; &nbsp;&nbsp;&nbsp;displayString(&#34;Wake&#34;);</font>
+<font color="#434f54">&#47;&#47; &nbsp;&nbsp;&nbsp;delay(1000);</font>
+<font color="#434f54">&#47;&#47; &nbsp;&nbsp;&nbsp;clearmatrix();</font>
+ &nbsp;&nbsp;&nbsp;
+ &nbsp;&nbsp;&nbsp;<font color="#000000">SleepTimer</font> <font color="#434f54">=</font> <font color="#d35400">millis</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;
+ &nbsp;
+<font color="#000000">}</font>
+
+<font color="#434f54">&#47;&#47;*******************************************************************************************************************</font>
+<font color="#434f54">&#47;&#47; &#09;&#09;&#09;&#09;&#09;&#09;&#09;&#09; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MAX power Savings</font>
+<font color="#434f54">&#47;&#47;*******************************************************************************************************************</font>
+<font color="#00979c">void</font> <font color="#000000">UltraPowerDown</font><font color="#000000">(</font><font color="#00979c">boolean</font> <font color="#000000">onoff</font><font color="#000000">)</font>
+<font color="#000000">{</font>
+ &nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">onoff</font><font color="#000000">)</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; True = full power mode = ON</font>
+ &nbsp;<font color="#000000">{</font>
+<font color="#434f54">&#47;&#47; &nbsp;pinMode(4, OUTPUT); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#47;&#47; DeMux A</font>
+<font color="#434f54">&#47;&#47; &nbsp;pinMode(5, OUTPUT); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#47;&#47; DeMux B</font>
+<font color="#434f54">&#47;&#47; &nbsp;pinMode(6, OUTPUT); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#47;&#47; DeMux C</font>
+<font color="#434f54">&#47;&#47; &nbsp;pinMode(7, OUTPUT); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#47;&#47; DeMux D &nbsp;</font>
+ &nbsp;&nbsp;&nbsp;
+ &nbsp;&nbsp;<font color="#000000">power_timer1_enable</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Used for LED matrix refresh</font>
+ &nbsp;&nbsp;<font color="#000000">power_timer0_enable</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Seems required (for delay ?)</font>
+ &nbsp;&nbsp;<font color="#000000">power_timer2_enable</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Seems required for tone (crashes without)</font>
+ &nbsp;&nbsp;
+ &nbsp;&nbsp;<font color="#000000">power_twi_enable</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">}</font>
+ &nbsp;<font color="#5e6d03">else</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; False is LOW Power mode</font>
+ &nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; LED MATRIX</font>
+ &nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Port C: C0 to C3 set to high. Columns 17 to 20 of LED matrix - Cathode connection</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">PORTC</font> <font color="#434f54">=</font> <font color="#000000">(</font><font color="#000000">PORTC</font> <font color="#434f54">&amp;</font> <font color="#000000">B11110000</font><font color="#000000">)</font> <font color="#434f54">|</font> <font color="#000000">B00001111</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;
+ &nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Port B: Unselect the MUX chip</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">PORTB</font> <font color="#434f54">=</font> <font color="#000000">(</font><font color="#000000">1</font><font color="#434f54">&lt;&lt;</font><font color="#000000">PORTB7</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Port B: Set all the ROWs to high: High on both cathode and annode = no current ?</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">PORTB</font> <font color="#434f54">=</font> <font color="#000000">PORTB</font> <font color="#434f54">|</font> <font color="#000000">B01111111</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Could be PORTB =B11111111;</font>
+ &nbsp;&nbsp;&nbsp;
+ <font color="#434f54">&#47;&#47; pinMode(4, INPUT); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#47;&#47; DeMux A &#47;&#47; Set these to inputs to lower current on mux inputs</font>
+ <font color="#434f54">&#47;&#47; pinMode(5, INPUT); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#47;&#47; DeMux B</font>
+ <font color="#434f54">&#47;&#47; pinMode(6, INPUT); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#47;&#47; DeMux C</font>
+<font color="#434f54">&#47;&#47; &nbsp;pinMode(7, INPUT); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#47;&#47; DeMux D </font>
+
+ &nbsp;&nbsp;&nbsp;<font color="#000000">PORTD</font> <font color="#434f54">=</font> <font color="#000000">(</font><font color="#000000">PORTD</font> <font color="#434f54">&amp;</font> <font color="#000000">B00001111</font><font color="#000000">)</font> <font color="#434f54">|</font> <font color="#000000">B11110000</font> <font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; SET all address pins</font>
+ &nbsp;&nbsp;&nbsp;
+ &nbsp;&nbsp;&nbsp;
+ &nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Other Peripherals</font>
+ &nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47;</font>
+ &nbsp;&nbsp;<font color="#000000">power_timer1_disable</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Used for LED matrix refresh</font>
+ &nbsp;&nbsp;<font color="#000000">power_timer0_disable</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Seems required (for delay ?)</font>
+ &nbsp;&nbsp;<font color="#000000">power_timer2_disable</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Seems required for tone (crashes without)</font>
+ &nbsp;&nbsp;
+ &nbsp;&nbsp;<font color="#000000">power_twi_disable</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;&nbsp;
+ &nbsp;&nbsp;<font color="#000000">PORTC</font> <font color="#434f54">=</font> <font color="#000000">PORTC</font> <font color="#434f54">|</font> <font color="#000000">1</font> <font color="#434f54">&lt;&lt;</font> <font color="#000000">PORTC4</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Set SDA and SCL to high so they do not pull current from external pull-up</font>
+ &nbsp;&nbsp;<font color="#000000">PORTC</font> <font color="#434f54">=</font> <font color="#000000">PORTC</font> <font color="#434f54">|</font> <font color="#000000">1</font> <font color="#434f54">&lt;&lt;</font> <font color="#000000">PORTC5</font><font color="#000000">;</font> 
+ 
+ &nbsp;<font color="#000000">DDRC</font> <font color="#434f54">=</font> <font color="#000000">DDRC</font> <font color="#434f54">|</font> <font color="#000000">1</font> <font color="#434f54">&lt;&lt;</font> <font color="#000000">PORTC4</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Make SDA and SCL inputs = lower current</font>
+ &nbsp;<font color="#000000">DDRC</font> <font color="#434f54">=</font> <font color="#000000">DDRC</font> <font color="#434f54">|</font> <font color="#000000">1</font> <font color="#434f54">&lt;&lt;</font> <font color="#000000">PORTC5</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47;</font>
+ &nbsp;<font color="#000000">}</font>
+ &nbsp;
+<font color="#000000">}</font>
+
+<font color="#434f54">&#47;&#47;*******************************************************************************************************************</font>
+<font color="#434f54">&#47;&#47; &#09;&#09;&#09;&#09;&#09;&#09;&#09;&#09; WAKE-UP - Called by Interrupt 0 on Digital pin 2</font>
+<font color="#434f54">&#47;&#47;*******************************************************************************************************************</font>
+
+<font color="#00979c">void</font> <font color="#000000">MinuteUP</font><font color="#000000">(</font><font color="#000000">)</font>
+<font color="#000000">{</font>
+ &nbsp;<font color="#000000">MINUP</font> <font color="#434f54">=</font> <font color="#00979c">true</font><font color="#000000">;</font>
+<font color="#000000">}</font>
+
+<font color="#95a5a6">&#47;*</font>
+<font color="#95a5a6">void MinuteDOWN()</font>
+<font color="#95a5a6">{</font>
+<font color="#95a5a6"></font>
+<font color="#95a5a6">}</font>
+<font color="#95a5a6">*&#47;</font>
+
+<font color="#00979c">void</font> <font color="#000000">ResetSleepCount</font><font color="#000000">(</font><font color="#000000">)</font>
+<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">SleepTimer</font> <font color="#434f54">=</font> <font color="#d35400">millis</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">;</font>
+<font color="#000000">}</font> &nbsp;&nbsp;&nbsp;&nbsp;
+
+</pre>

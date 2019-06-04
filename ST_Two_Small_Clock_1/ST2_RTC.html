@@ -1,0 +1,527 @@
+<pre>
+<font color="#434f54">&#47;&#47;*******************************************************************************************************************</font>
+<font color="#434f54">&#47;&#47; &#09;&#09;&#09;&#09;&#09;&#09;&#09;&#09; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Check Time</font>
+<font color="#434f54">&#47;&#47;*******************************************************************************************************************</font>
+<font color="#00979c">void</font> <font color="#000000">checktime</font><font color="#000000">(</font><font color="#000000">)</font>
+<font color="#000000">{</font>
+ &nbsp;<font color="#00979c">uint8_t</font> <font color="#000000">temp</font> <font color="#434f54">=</font><font color="#000000">0</font><font color="#000000">;</font>
+
+ &nbsp;<font color="#000000">I2C_RX</font><font color="#000000">(</font><font color="#000000">RTCDS1337</font><font color="#434f54">,</font><font color="#000000">RTC_SEC</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">SecOnes</font> <font color="#434f54">=</font> <font color="#000000">i2cData</font> <font color="#434f54">&amp;</font> <font color="#000000">B00001111</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; </font>
+
+ &nbsp;<font color="#000000">SecTens</font> <font color="#434f54">=</font> <font color="#000000">i2cData</font> <font color="#434f54">&amp;</font> <font color="#000000">B01110000</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; </font>
+ &nbsp;<font color="#000000">SecTens</font> <font color="#434f54">=</font> <font color="#000000">SecTens</font> <font color="#434f54">&gt;&gt;</font> <font color="#000000">4</font><font color="#000000">;</font>
+
+
+ &nbsp;<font color="#000000">I2C_RX</font><font color="#000000">(</font><font color="#000000">RTCDS1337</font><font color="#434f54">,</font><font color="#000000">RTC_MIN</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">MinOnes</font> <font color="#434f54">=</font> <font color="#000000">i2cData</font> <font color="#434f54">&amp;</font> <font color="#000000">B00001111</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; </font>
+
+ &nbsp;<font color="#000000">MinTens</font> <font color="#434f54">=</font> <font color="#000000">i2cData</font> <font color="#434f54">&amp;</font> <font color="#000000">B01110000</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; </font>
+ &nbsp;<font color="#000000">MinTens</font> <font color="#434f54">=</font> <font color="#000000">MinTens</font> <font color="#434f54">&gt;&gt;</font> <font color="#000000">4</font><font color="#000000">;</font>
+
+ &nbsp;<font color="#000000">I2C_RX</font><font color="#000000">(</font><font color="#000000">RTCDS1337</font><font color="#434f54">,</font><font color="#000000">RTC_HOUR</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">HourOnes</font> <font color="#434f54">=</font> <font color="#000000">i2cData</font> <font color="#434f54">&amp;</font> <font color="#000000">B00001111</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; </font>
+
+ &nbsp;<font color="#000000">TH_Not24_flag</font> <font color="#434f54">=</font> <font color="#d35400">bitRead</font><font color="#000000">(</font><font color="#000000">i2cData</font><font color="#434f54">,</font> <font color="#000000">6</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; False on RTC when 24 mode selected</font>
+ &nbsp;<font color="#000000">PM_NotAM_flag</font> <font color="#434f54">=</font> <font color="#d35400">bitRead</font><font color="#000000">(</font><font color="#000000">i2cData</font><font color="#434f54">,</font> <font color="#000000">5</font><font color="#000000">)</font><font color="#000000">;</font>
+
+ &nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">TH_Not24_flag</font> <font color="#434f54">==</font> <font color="#00979c">true</font><font color="#000000">)</font>
+ &nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">HourTens</font> <font color="#434f54">=</font> <font color="#000000">i2cData</font> <font color="#434f54">&amp;</font> <font color="#000000">B00010000</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; </font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">HourTens</font> <font color="#434f54">=</font> <font color="#000000">HourTens</font> <font color="#434f54">&gt;&gt;</font> <font color="#000000">4</font><font color="#000000">;</font>
+
+ &nbsp;<font color="#000000">}</font>
+ &nbsp;<font color="#5e6d03">else</font>
+ &nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">HourTens</font> <font color="#434f54">=</font> <font color="#000000">i2cData</font> <font color="#434f54">&amp;</font> <font color="#000000">B00110000</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; </font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">HourTens</font> <font color="#434f54">=</font> <font color="#000000">HourTens</font> <font color="#434f54">&gt;&gt;</font> <font color="#000000">4</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">}</font>
+<font color="#000000">}</font>
+
+<font color="#434f54">&#47;&#47;*******************************************************************************************************************</font>
+<font color="#434f54">&#47;&#47; &#09;&#09;&#09;&#09;&#09;&#09;&#09;&#09; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Check Date</font>
+<font color="#434f54">&#47;&#47;*******************************************************************************************************************</font>
+<font color="#00979c">void</font> <font color="#000000">checkDate</font><font color="#000000">(</font><font color="#000000">)</font>
+<font color="#000000">{</font>
+
+ &nbsp;<font color="#00979c">int</font> <font color="#000000">temp</font> <font color="#434f54">=</font> <font color="#000000">0</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">I2C_RX</font><font color="#000000">(</font><font color="#000000">RTCDS1337</font><font color="#434f54">,</font><font color="#000000">RTC_DAY</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">Days</font> <font color="#434f54">=</font> <font color="#000000">i2cData</font> <font color="#434f54">&amp;</font> <font color="#000000">B00000111</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; </font>
+
+ &nbsp;<font color="#000000">I2C_RX</font><font color="#000000">(</font><font color="#000000">RTCDS1337</font><font color="#434f54">,</font><font color="#000000">RTC_MONTH</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">MonthCode</font> <font color="#434f54">=</font> <font color="#000000">i2cData</font> <font color="#434f54">&amp;</font> <font color="#000000">B00001111</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; </font>
+
+ &nbsp;<font color="#000000">temp</font> <font color="#434f54">=</font> <font color="#000000">(</font><font color="#000000">i2cData</font> <font color="#434f54">&amp;</font> <font color="#000000">B00010000</font><font color="#000000">)</font> <font color="#434f54">&gt;&gt;</font> <font color="#000000">4</font><font color="#000000">;</font>
+ &nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">temp</font><font color="#000000">)</font>
+ &nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">MonthCode</font> <font color="#434f54">=</font> <font color="#000000">MonthCode</font> <font color="#434f54">+</font><font color="#000000">10</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Convert BCD month into interger month</font>
+ &nbsp;<font color="#000000">}</font>
+
+ &nbsp;<font color="#000000">I2C_RX</font><font color="#000000">(</font><font color="#000000">RTCDS1337</font><font color="#434f54">,</font><font color="#000000">RTC_DATE</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">DateOnes</font> <font color="#434f54">=</font> <font color="#000000">i2cData</font> <font color="#434f54">&amp;</font> <font color="#000000">B00001111</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; </font>
+ &nbsp;<font color="#000000">DateTens</font> <font color="#434f54">=</font> <font color="#000000">(</font><font color="#000000">i2cData</font> <font color="#434f54">&amp;</font> <font color="#000000">B00110000</font><font color="#000000">)</font> <font color="#434f54">&gt;&gt;</font> <font color="#000000">4</font><font color="#000000">;</font>
+
+<font color="#000000">}</font>
+
+
+<font color="#434f54">&#47;&#47;*******************************************************************************************************************</font>
+<font color="#434f54">&#47;&#47; &#09;&#09;&#09;&#09;&#09;&#09;&#09;&#09; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SET Time - NEW</font>
+<font color="#434f54">&#47;&#47;*******************************************************************************************************************</font>
+
+<font color="#00979c">void</font> <font color="#000000">settimeNEW</font><font color="#000000">(</font><font color="#00979c">uint8_t</font> <font color="#000000">setselect</font><font color="#000000">)</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; both min digits or both hour digits (advance one at a time)</font>
+<font color="#000000">{</font>
+ &nbsp;<font color="#00979c">uint8_t</font> <font color="#000000">temp</font> <font color="#434f54">=</font><font color="#000000">0</font><font color="#000000">;</font>
+ &nbsp;<font color="#5e6d03">switch</font><font color="#000000">(</font><font color="#000000">setselect</font><font color="#000000">)</font>
+ &nbsp;<font color="#000000">{</font>
+
+ &nbsp;<font color="#5e6d03">case</font> <font color="#000000">1</font><font color="#434f54">:</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">MinOnes</font> <font color="#434f54">=</font> <font color="#000000">MinOnes</font> <font color="#434f54">+</font><font color="#000000">1</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">MinOnes</font> <font color="#434f54">&gt;</font><font color="#000000">9</font><font color="#000000">)</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">MinOnes</font> <font color="#434f54">=</font> <font color="#000000">0</font><font color="#000000">;</font>
+
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">MinTens</font> <font color="#434f54">=</font> <font color="#000000">MinTens</font> <font color="#434f54">+</font><font color="#000000">1</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">MinTens</font> <font color="#434f54">&gt;</font><font color="#000000">5</font><font color="#000000">)</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">MinTens</font> <font color="#434f54">=</font> <font color="#000000">0</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; &nbsp;&nbsp;temp = (MinTens &lt;&lt; 4) + MinOnes;</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; &nbsp;&nbsp;I2C_TX(RTCDS1337,RTC_MIN,temp);</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+
+ &nbsp;&nbsp;&nbsp;<font color="#000000">temp</font> <font color="#434f54">=</font> <font color="#000000">(</font><font color="#000000">MinTens</font> <font color="#434f54">&lt;&lt;</font> <font color="#000000">4</font><font color="#000000">)</font> <font color="#434f54">+</font> <font color="#000000">MinOnes</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">I2C_TX</font><font color="#000000">(</font><font color="#000000">RTCDS1337</font><font color="#434f54">,</font><font color="#000000">RTC_MIN</font><font color="#434f54">,</font><font color="#000000">temp</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">break</font><font color="#000000">;</font>
+
+
+ &nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; -----------------------------------------------</font>
+
+ &nbsp;<font color="#5e6d03">case</font> <font color="#000000">2</font><font color="#434f54">:</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">HourOnes</font> <font color="#434f54">=</font> <font color="#000000">HourOnes</font> <font color="#434f54">+</font><font color="#000000">1</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">TH_Not24_flag</font><font color="#000000">)</font>
+<font color="#434f54">&#47;&#47; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;12 hours mode increment &nbsp;&nbsp;&nbsp;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">HourOnes</font> <font color="#434f54">&gt;</font><font color="#000000">9</font> <font color="#000000">)</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">HourOnes</font> <font color="#434f54">=</font> <font color="#000000">0</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">HourTens</font> <font color="#434f54">=</font> <font color="#000000">1</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+ &nbsp;&nbsp;&nbsp;
+ &nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">(</font><font color="#000000">HourOnes</font> <font color="#434f54">==</font><font color="#000000">2</font><font color="#000000">)</font> <font color="#434f54">&amp;&amp;</font> &nbsp;<font color="#000000">(</font><font color="#000000">HourTens</font> <font color="#434f54">==</font> <font color="#000000">1</font><font color="#000000">)</font><font color="#000000">)</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">PM_NotAM_flag</font> <font color="#434f54">=</font> <font color="#434f54">!</font><font color="#000000">PM_NotAM_flag</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+ &nbsp;&nbsp;&nbsp;
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">(</font><font color="#000000">HourOnes</font> <font color="#434f54">&gt;</font><font color="#000000">2</font><font color="#000000">)</font> <font color="#434f54">&amp;&amp;</font> &nbsp;<font color="#000000">(</font><font color="#000000">HourTens</font> <font color="#434f54">==</font> <font color="#000000">1</font><font color="#000000">)</font><font color="#000000">)</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+<font color="#434f54">&#47;&#47; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PM_NotAM_flag = !PM_NotAM_flag;</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">HourTens</font> <font color="#434f54">=</font> <font color="#000000">0</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">HourOnes</font> <font color="#434f54">=</font> <font color="#000000">1</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+ &nbsp;&nbsp;&nbsp;
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">else</font>
+<font color="#434f54">&#47;&#47; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;24 hours mode increment - S &nbsp;&nbsp;&nbsp;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">(</font><font color="#000000">HourOnes</font> <font color="#434f54">&gt;</font><font color="#000000">9</font><font color="#000000">)</font> <font color="#434f54">&amp;&amp;</font> <font color="#000000">(</font><font color="#000000">HourTens</font> <font color="#434f54">&lt;</font> <font color="#000000">2</font><font color="#000000">)</font><font color="#000000">)</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">HourOnes</font> <font color="#434f54">=</font> <font color="#000000">0</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">HourTens</font> <font color="#434f54">=</font> <font color="#000000">HourTens</font> <font color="#434f54">+</font><font color="#000000">1</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+ &nbsp;&nbsp;&nbsp;
+ &nbsp;&nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">(</font><font color="#000000">HourTens</font> <font color="#434f54">==</font><font color="#000000">2</font><font color="#000000">)</font> <font color="#434f54">&amp;&amp;</font> <font color="#000000">(</font><font color="#000000">HourOnes</font> <font color="#434f54">==</font> <font color="#000000">4</font><font color="#000000">)</font><font color="#000000">)</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">HourOnes</font> <font color="#434f54">=</font> <font color="#000000">0</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">HourTens</font> <font color="#434f54">=</font> <font color="#000000">0</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+<font color="#434f54">&#47;&#47; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;24 hours mode increment - E</font>
+ &nbsp;&nbsp;&nbsp;
+ &nbsp;&nbsp;&nbsp;<font color="#000000">temp</font> <font color="#434f54">=</font> <font color="#000000">(</font><font color="#000000">HourTens</font> <font color="#434f54">&lt;&lt;</font> <font color="#000000">4</font><font color="#000000">)</font> <font color="#434f54">+</font> <font color="#000000">HourOnes</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">TH_Not24_flag</font><font color="#000000">)</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#d35400">bitWrite</font><font color="#000000">(</font><font color="#000000">temp</font><font color="#434f54">,</font> <font color="#000000">5</font><font color="#434f54">,</font> <font color="#000000">PM_NotAM_flag</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+
+ &nbsp;&nbsp;&nbsp;<font color="#d35400">bitWrite</font><font color="#000000">(</font><font color="#000000">temp</font><font color="#434f54">,</font> <font color="#000000">6</font><font color="#434f54">,</font> <font color="#000000">TH_Not24_flag</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">I2C_TX</font><font color="#000000">(</font><font color="#000000">RTCDS1337</font><font color="#434f54">,</font><font color="#000000">RTC_HOUR</font><font color="#434f54">,</font><font color="#000000">temp</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">break</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;
+
+ &nbsp;<font color="#5e6d03">case</font> <font color="#000000">3</font><font color="#434f54">:</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">Days</font> <font color="#434f54">=</font> <font color="#000000">Days</font> <font color="#434f54">+</font><font color="#000000">1</font> <font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">Days</font><font color="#434f54">&gt;</font><font color="#000000">7</font><font color="#000000">)</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">Days</font> <font color="#434f54">=</font> <font color="#000000">1</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">temp</font> <font color="#434f54">=</font> <font color="#000000">Days</font> <font color="#434f54">&amp;</font> <font color="#000000">B00000111</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; </font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">I2C_TX</font><font color="#000000">(</font><font color="#000000">RTCDS1337</font><font color="#434f54">,</font><font color="#000000">RTC_DAY</font><font color="#434f54">,</font><font color="#000000">temp</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">break</font><font color="#000000">;</font>
+
+ &nbsp;<font color="#5e6d03">case</font> <font color="#000000">4</font><font color="#434f54">:</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">temp</font> <font color="#434f54">=</font> <font color="#000000">0</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">MonthCode</font> <font color="#434f54">=</font> <font color="#000000">MonthCode</font> <font color="#434f54">+</font><font color="#000000">1</font> <font color="#000000">;</font> &nbsp;
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">MonthCode</font> <font color="#434f54">&gt;</font><font color="#000000">12</font><font color="#000000">)</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">MonthCode</font> <font color="#434f54">=</font> <font color="#000000">1</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font> 
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">MonthCode</font><font color="#434f54">&gt;</font><font color="#000000">9</font><font color="#000000">)</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">temp</font> <font color="#434f54">=</font> <font color="#000000">MonthCode</font> <font color="#434f54">-</font> <font color="#000000">10</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; MonthCode = MonthCode &amp; B00001111;</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#d35400">bitSet</font><font color="#000000">(</font><font color="#000000">temp</font><font color="#434f54">,</font> <font color="#000000">4</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Convert int to BCD</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">else</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">temp</font> <font color="#434f54">=</font> <font color="#000000">MonthCode</font> <font color="#434f54">&amp;</font> <font color="#000000">B00001111</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+
+ &nbsp;&nbsp;&nbsp;<font color="#000000">I2C_TX</font><font color="#000000">(</font><font color="#000000">RTCDS1337</font><font color="#434f54">,</font><font color="#000000">RTC_MONTH</font><font color="#434f54">,</font><font color="#000000">temp</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">break</font><font color="#000000">;</font>
+
+ &nbsp;<font color="#5e6d03">case</font> <font color="#000000">5</font><font color="#434f54">:</font> &nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Date</font>
+
+ &nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; &nbsp;&nbsp;I2C_RX(RTCDS1337,RTC_DATE);</font>
+ &nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; &nbsp;&nbsp;DateOnes = i2cData &amp; B00001111; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; &nbsp;&nbsp;DateTens = (i2cData &amp; B00110000) &gt;&gt; 4; &nbsp;&nbsp;&nbsp;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">DateOnes</font> <font color="#434f54">=</font> <font color="#000000">DateOnes</font> <font color="#434f54">+</font> <font color="#000000">1</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">(</font><font color="#000000">DateTens</font> <font color="#434f54">==</font> <font color="#000000">3</font><font color="#000000">)</font> <font color="#434f54">&amp;&amp;</font> <font color="#000000">(</font><font color="#000000">DateOnes</font> <font color="#434f54">&gt;</font> <font color="#000000">1</font><font color="#000000">)</font><font color="#000000">)</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">DateOnes</font> <font color="#434f54">=</font> <font color="#000000">1</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">DateTens</font> <font color="#434f54">=</font><font color="#000000">0</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">else</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">DateOnes</font><font color="#434f54">&gt;</font><font color="#000000">9</font><font color="#000000">)</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">DateOnes</font> <font color="#434f54">=</font> <font color="#000000">0</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">DateTens</font> <font color="#434f54">=</font> <font color="#000000">DateTens</font> <font color="#434f54">+</font><font color="#000000">1</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">temp</font> <font color="#434f54">=</font> <font color="#000000">(</font><font color="#000000">DateOnes</font> <font color="#434f54">&amp;</font> <font color="#000000">B00001111</font><font color="#000000">)</font> <font color="#434f54">|</font> <font color="#000000">(</font><font color="#000000">(</font><font color="#000000">DateTens</font> <font color="#434f54">&lt;&lt;</font> <font color="#000000">4</font><font color="#000000">)</font> <font color="#434f54">&amp;</font> <font color="#000000">B00110000</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">I2C_TX</font><font color="#000000">(</font><font color="#000000">RTCDS1337</font><font color="#434f54">,</font><font color="#000000">RTC_DATE</font><font color="#434f54">,</font><font color="#000000">temp</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">break</font><font color="#000000">;</font> &nbsp;
+
+ &nbsp;<font color="#5e6d03">case</font> <font color="#000000">6</font><font color="#434f54">:</font> &nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; year</font>
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">break</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">}</font>
+<font color="#000000">}</font>
+
+<font color="#434f54">&#47;&#47;*******************************************************************************************************************</font>
+<font color="#434f54">&#47;&#47; 12:00&#09;&#09;&#09;&#09;&#09;&#09;&#09;&#09; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Start Time</font>
+<font color="#434f54">&#47;&#47;*******************************************************************************************************************</font>
+
+<font color="#00979c">void</font> <font color="#000000">SetStartTime</font><font color="#000000">(</font><font color="#000000">)</font>
+<font color="#000000">{</font>
+ &nbsp;<font color="#00979c">uint8_t</font> <font color="#000000">temp</font> <font color="#434f54">=</font><font color="#000000">0</font><font color="#000000">;</font>
+
+ &nbsp;<font color="#000000">HourTens</font> <font color="#434f54">=</font> <font color="#000000">1</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">HourOnes</font> <font color="#434f54">=</font> <font color="#000000">2</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">temp</font> <font color="#434f54">=</font> <font color="#000000">(</font><font color="#000000">HourTens</font> <font color="#434f54">&lt;&lt;</font> <font color="#000000">4</font><font color="#000000">)</font> <font color="#434f54">+</font> <font color="#000000">HourOnes</font><font color="#000000">;</font>
+ &nbsp;<font color="#d35400">bitWrite</font><font color="#000000">(</font><font color="#000000">temp</font><font color="#434f54">,</font> <font color="#000000">5</font><font color="#434f54">,</font> <font color="#000000">PM_NotAM_flag</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#d35400">bitWrite</font><font color="#000000">(</font><font color="#000000">temp</font><font color="#434f54">,</font> <font color="#000000">6</font><font color="#434f54">,</font> <font color="#000000">TH_Not24_flag</font><font color="#000000">)</font><font color="#000000">;</font>
+
+ &nbsp;<font color="#000000">I2C_TX</font><font color="#000000">(</font><font color="#000000">RTCDS1337</font><font color="#434f54">,</font><font color="#000000">RTC_HOUR</font><font color="#434f54">,</font><font color="#000000">temp</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;
+
+ &nbsp;<font color="#000000">MinTens</font> <font color="#434f54">=</font> <font color="#000000">0</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">MinOnes</font> <font color="#434f54">=</font> <font color="#000000">0</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">temp</font> <font color="#434f54">=</font> <font color="#000000">(</font><font color="#000000">MinTens</font> <font color="#434f54">&lt;&lt;</font> <font color="#000000">4</font><font color="#000000">)</font> <font color="#434f54">+</font> <font color="#000000">MinOnes</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">I2C_TX</font><font color="#000000">(</font><font color="#000000">RTCDS1337</font><font color="#434f54">,</font><font color="#000000">RTC_MIN</font><font color="#434f54">,</font><font color="#000000">temp</font><font color="#000000">)</font><font color="#000000">;</font>
+<font color="#000000">}</font>
+
+<font color="#434f54">&#47;&#47;*******************************************************************************************************************</font>
+<font color="#434f54">&#47;&#47; &#09;&#09;&#09;&#09;&#09;&#09;&#09;&#09; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SET Alarm</font>
+<font color="#434f54">&#47;&#47;*******************************************************************************************************************</font>
+
+<font color="#00979c">void</font> <font color="#000000">SetAlarmTime</font><font color="#000000">(</font><font color="#000000">)</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Just for testing set to 12:01 PM</font>
+<font color="#000000">{</font>
+ &nbsp;<font color="#00979c">uint8_t</font> <font color="#000000">temp</font> <font color="#434f54">=</font><font color="#000000">0</font><font color="#000000">;</font>
+
+ &nbsp;<font color="#000000">HourTens</font> <font color="#434f54">=</font> <font color="#000000">1</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">HourOnes</font> <font color="#434f54">=</font> <font color="#000000">2</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">temp</font> <font color="#434f54">=</font> <font color="#000000">(</font><font color="#000000">HourTens</font> <font color="#434f54">&lt;&lt;</font> <font color="#000000">4</font><font color="#000000">)</font> <font color="#434f54">+</font> <font color="#000000">HourOnes</font><font color="#000000">;</font>
+ &nbsp;<font color="#d35400">bitWrite</font><font color="#000000">(</font><font color="#000000">temp</font><font color="#434f54">,</font> <font color="#000000">5</font><font color="#434f54">,</font> <font color="#000000">A_PM_NotAM_flag</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#d35400">bitWrite</font><font color="#000000">(</font><font color="#000000">temp</font><font color="#434f54">,</font> <font color="#000000">6</font><font color="#434f54">,</font> <font color="#000000">A_TH_Not24_flag</font><font color="#000000">)</font><font color="#000000">;</font>
+
+ &nbsp;<font color="#000000">I2C_TX</font><font color="#000000">(</font><font color="#000000">RTCDS1337</font><font color="#434f54">,</font><font color="#000000">RTC_ALARM1HOUR</font><font color="#434f54">,</font><font color="#000000">temp</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;
+
+ &nbsp;<font color="#000000">MinTens</font> <font color="#434f54">=</font> <font color="#000000">0</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">MinOnes</font> <font color="#434f54">=</font> <font color="#000000">1</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">temp</font> <font color="#434f54">=</font> <font color="#000000">(</font><font color="#000000">MinTens</font> <font color="#434f54">&lt;&lt;</font> <font color="#000000">4</font><font color="#000000">)</font> <font color="#434f54">+</font> <font color="#000000">MinOnes</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">I2C_TX</font><font color="#000000">(</font><font color="#000000">RTCDS1337</font><font color="#434f54">,</font><font color="#000000">RTC_ALARM1MIN</font><font color="#434f54">,</font><font color="#000000">temp</font><font color="#000000">)</font><font color="#000000">;</font>
+
+
+<font color="#000000">}</font>
+
+<font color="#434f54">&#47;&#47;*******************************************************************************************************************</font>
+<font color="#434f54">&#47;&#47; &#09;&#09;&#09;&#09;&#09;&#09;&#09;&#09; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Check Alarm</font>
+<font color="#434f54">&#47;&#47;*******************************************************************************************************************</font>
+
+<font color="#00979c">void</font> <font color="#000000">CheckAlarm</font><font color="#000000">(</font><font color="#000000">)</font>
+<font color="#000000">{</font>
+ &nbsp;<font color="#00979c">uint8_t</font> <font color="#000000">temp</font> <font color="#434f54">=</font><font color="#000000">0</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">I2C_RX</font><font color="#000000">(</font><font color="#000000">RTCDS1337</font><font color="#434f54">,</font><font color="#000000">RTCSTATUS</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">ALARM1FLAG</font> <font color="#434f54">=</font> <font color="#d35400">bitRead</font><font color="#000000">(</font><font color="#000000">i2cData</font><font color="#434f54">,</font> <font color="#000000">0</font><font color="#000000">)</font><font color="#000000">;</font>
+
+ &nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">ALARM1FLAG</font><font color="#000000">)</font>
+ &nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">temp</font> <font color="#434f54">=</font><font color="#000000">i2cData</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#d35400">bitClear</font><font color="#000000">(</font><font color="#000000">temp</font><font color="#434f54">,</font> <font color="#000000">0</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">I2C_TX</font><font color="#000000">(</font><font color="#000000">RTCDS1337</font><font color="#434f54">,</font><font color="#000000">RTCSTATUS</font><font color="#434f54">,</font><font color="#000000">temp</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;
+ &nbsp;<font color="#000000">}</font>
+
+<font color="#000000">}</font>
+
+<font color="#434f54">&#47;&#47;*******************************************************************************************************************</font>
+<font color="#434f54">&#47;&#47; &#09;&#09;&#09;&#09;&#09;&#09;&#09;&#09; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Enable Alarm</font>
+<font color="#434f54">&#47;&#47;*******************************************************************************************************************</font>
+
+<font color="#00979c">void</font> <font color="#000000">EnableAlarm1</font><font color="#000000">(</font><font color="#00979c">boolean</font> <font color="#000000">onoff</font><font color="#000000">)</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Trigger on Hours &amp; Minutes Match</font>
+<font color="#000000">{</font>
+ &nbsp;<font color="#00979c">uint8_t</font> <font color="#000000">temp</font> <font color="#434f54">=</font><font color="#000000">0</font><font color="#000000">;</font>
+
+ &nbsp;<font color="#434f54">&#47;&#47; Adjust for Hours - Minutes Trigger -S</font>
+ &nbsp;<font color="#000000">I2C_RX</font><font color="#000000">(</font><font color="#000000">RTCDS1337</font><font color="#434f54">,</font><font color="#000000">RTC_ALARM1SEC</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">temp</font> <font color="#434f54">=</font><font color="#000000">i2cData</font><font color="#000000">;</font>
+ &nbsp;<font color="#d35400">bitClear</font><font color="#000000">(</font><font color="#000000">temp</font><font color="#434f54">,</font> <font color="#000000">7</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">I2C_TX</font><font color="#000000">(</font><font color="#000000">RTCDS1337</font><font color="#434f54">,</font><font color="#000000">RTC_ALARM1SEC</font><font color="#434f54">,</font><font color="#000000">temp</font><font color="#000000">)</font><font color="#000000">;</font>
+
+ &nbsp;<font color="#000000">I2C_RX</font><font color="#000000">(</font><font color="#000000">RTCDS1337</font><font color="#434f54">,</font><font color="#000000">RTC_ALARM1MIN</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">temp</font> <font color="#434f54">=</font><font color="#000000">i2cData</font><font color="#000000">;</font>
+ &nbsp;<font color="#d35400">bitClear</font><font color="#000000">(</font><font color="#000000">temp</font><font color="#434f54">,</font> <font color="#000000">7</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">I2C_TX</font><font color="#000000">(</font><font color="#000000">RTCDS1337</font><font color="#434f54">,</font><font color="#000000">RTC_ALARM1MIN</font><font color="#434f54">,</font><font color="#000000">temp</font><font color="#000000">)</font><font color="#000000">;</font>
+
+ &nbsp;<font color="#000000">I2C_RX</font><font color="#000000">(</font><font color="#000000">RTCDS1337</font><font color="#434f54">,</font><font color="#000000">RTC_ALARM1HOUR</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">temp</font> <font color="#434f54">=</font><font color="#000000">i2cData</font><font color="#000000">;</font>
+ &nbsp;<font color="#d35400">bitClear</font><font color="#000000">(</font><font color="#000000">temp</font><font color="#434f54">,</font> <font color="#000000">7</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">I2C_TX</font><font color="#000000">(</font><font color="#000000">RTCDS1337</font><font color="#434f54">,</font><font color="#000000">RTC_ALARM1HOUR</font><font color="#434f54">,</font><font color="#000000">temp</font><font color="#000000">)</font><font color="#000000">;</font> 
+
+ &nbsp;<font color="#000000">I2C_RX</font><font color="#000000">(</font><font color="#000000">RTCDS1337</font><font color="#434f54">,</font><font color="#000000">RTC_ALARM1DATE</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">temp</font> <font color="#434f54">=</font><font color="#000000">i2cData</font><font color="#000000">;</font>
+ &nbsp;<font color="#d35400">bitSet</font><font color="#000000">(</font><font color="#000000">temp</font><font color="#434f54">,</font> <font color="#000000">7</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">I2C_TX</font><font color="#000000">(</font><font color="#000000">RTCDS1337</font><font color="#434f54">,</font><font color="#000000">RTC_ALARM1DATE</font><font color="#434f54">,</font><font color="#000000">temp</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;
+ &nbsp;<font color="#434f54">&#47;&#47; Adjust for Hours - Minutes Trigger -E</font>
+
+ &nbsp;<font color="#000000">I2C_RX</font><font color="#000000">(</font><font color="#000000">RTCDS1337</font><font color="#434f54">,</font><font color="#000000">RTCCONT</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Enable Alarm Pin on RTC</font>
+ &nbsp;<font color="#000000">temp</font> <font color="#434f54">=</font><font color="#000000">i2cData</font><font color="#000000">;</font>
+
+ &nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">onoff</font><font color="#000000">)</font>
+ &nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;<font color="#d35400">bitSet</font><font color="#000000">(</font><font color="#000000">temp</font><font color="#434f54">,</font> <font color="#000000">0</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;
+ &nbsp;<font color="#000000">}</font>
+ &nbsp;<font color="#5e6d03">else</font>
+ &nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;<font color="#d35400">bitClear</font><font color="#000000">(</font><font color="#000000">temp</font><font color="#434f54">,</font> <font color="#000000">0</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">}</font>
+ &nbsp;<font color="#000000">I2C_TX</font><font color="#000000">(</font><font color="#000000">RTCDS1337</font><font color="#434f54">,</font><font color="#000000">RTCCONT</font><font color="#434f54">,</font><font color="#000000">temp</font><font color="#000000">)</font><font color="#000000">;</font>
+
+ &nbsp;<font color="#000000">I2C_RX</font><font color="#000000">(</font><font color="#000000">RTCDS1337</font><font color="#434f54">,</font><font color="#000000">RTCSTATUS</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Clear Alarm RTC internal Alarm Flag</font>
+ &nbsp;<font color="#000000">temp</font> <font color="#434f54">=</font><font color="#000000">i2cData</font><font color="#000000">;</font>
+ &nbsp;<font color="#d35400">bitClear</font><font color="#000000">(</font><font color="#000000">temp</font><font color="#434f54">,</font> <font color="#000000">0</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">I2C_TX</font><font color="#000000">(</font><font color="#000000">RTCDS1337</font><font color="#434f54">,</font><font color="#000000">RTCSTATUS</font><font color="#434f54">,</font><font color="#000000">temp</font><font color="#000000">)</font><font color="#000000">;</font>
+<font color="#000000">}</font>
+<font color="#434f54">&#47;&#47;*******************************************************************************************************************</font>
+<font color="#434f54">&#47;&#47; &#09;&#09;&#09;&#09;&#09;&#09;&#09;&#09; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SET ALARM TIME</font>
+<font color="#434f54">&#47;&#47;*******************************************************************************************************************</font>
+
+<font color="#00979c">void</font> <font color="#000000">setAlarm</font><font color="#000000">(</font><font color="#00979c">uint8_t</font> <font color="#000000">setselect</font><font color="#000000">)</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; both min digits or both hour digits (advance one at a time)</font>
+<font color="#000000">{</font>
+ &nbsp;<font color="#00979c">uint8_t</font> <font color="#000000">temp</font> <font color="#434f54">=</font><font color="#000000">0</font><font color="#000000">;</font>
+ &nbsp;<font color="#5e6d03">switch</font><font color="#000000">(</font><font color="#000000">setselect</font><font color="#000000">)</font>
+ &nbsp;<font color="#000000">{</font>
+
+ &nbsp;<font color="#5e6d03">case</font> <font color="#000000">1</font><font color="#434f54">:</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">AMinOnes</font> <font color="#434f54">=</font> <font color="#000000">AMinOnes</font> <font color="#434f54">+</font><font color="#000000">1</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">AMinOnes</font> <font color="#434f54">&gt;</font><font color="#000000">9</font><font color="#000000">)</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">AMinOnes</font> <font color="#434f54">=</font> <font color="#000000">0</font><font color="#000000">;</font>
+
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">AMinTens</font> <font color="#434f54">=</font> <font color="#000000">AMinTens</font> <font color="#434f54">+</font><font color="#000000">1</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">AMinTens</font> <font color="#434f54">&gt;</font><font color="#000000">5</font><font color="#000000">)</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">AMinTens</font> <font color="#434f54">=</font> <font color="#000000">0</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+
+ &nbsp;&nbsp;&nbsp;<font color="#000000">temp</font> <font color="#434f54">=</font> <font color="#000000">(</font><font color="#000000">AMinTens</font> <font color="#434f54">&lt;&lt;</font> <font color="#000000">4</font><font color="#000000">)</font> <font color="#434f54">+</font> <font color="#000000">AMinOnes</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">I2C_TX</font><font color="#000000">(</font><font color="#000000">RTCDS1337</font><font color="#434f54">,</font><font color="#000000">RTC_ALARM1MIN</font><font color="#434f54">,</font><font color="#000000">temp</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">break</font><font color="#000000">;</font>
+
+
+ &nbsp;<font color="#5e6d03">case</font> <font color="#000000">2</font><font color="#434f54">:</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">AHourOnes</font> <font color="#434f54">=</font> <font color="#000000">AHourOnes</font> <font color="#434f54">+</font><font color="#000000">1</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;
+<font color="#434f54">&#47;&#47; -----------*</font>
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">A_TH_Not24_flag</font><font color="#000000">)</font>
+<font color="#434f54">&#47;&#47; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;12 hours mode increment &nbsp;&nbsp;&nbsp;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">AHourOnes</font> <font color="#434f54">&gt;</font><font color="#000000">9</font> <font color="#000000">)</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">AHourOnes</font> <font color="#434f54">=</font> <font color="#000000">0</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">AHourTens</font> <font color="#434f54">=</font> <font color="#000000">1</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+ &nbsp;&nbsp;&nbsp;
+ &nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">(</font><font color="#000000">AHourOnes</font> <font color="#434f54">==</font><font color="#000000">2</font><font color="#000000">)</font> <font color="#434f54">&amp;&amp;</font> &nbsp;<font color="#000000">(</font><font color="#000000">AHourTens</font> <font color="#434f54">==</font> <font color="#000000">1</font><font color="#000000">)</font><font color="#000000">)</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">A_PM_NotAM_flag</font> <font color="#434f54">=</font> <font color="#434f54">!</font><font color="#000000">A_PM_NotAM_flag</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+ &nbsp;&nbsp;&nbsp;
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">(</font><font color="#000000">AHourOnes</font> <font color="#434f54">&gt;</font><font color="#000000">2</font><font color="#000000">)</font> <font color="#434f54">&amp;&amp;</font> &nbsp;<font color="#000000">(</font><font color="#000000">AHourTens</font> <font color="#434f54">==</font> <font color="#000000">1</font><font color="#000000">)</font><font color="#000000">)</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+<font color="#434f54">&#47;&#47; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PM_NotAM_flag = !PM_NotAM_flag;</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">AHourTens</font> <font color="#434f54">=</font> <font color="#000000">0</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">AHourOnes</font> <font color="#434f54">=</font> <font color="#000000">1</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+ &nbsp;&nbsp;&nbsp;
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">else</font>
+<font color="#434f54">&#47;&#47; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;24 hours mode increment - S &nbsp;&nbsp;&nbsp;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">(</font><font color="#000000">AHourOnes</font> <font color="#434f54">&gt;</font><font color="#000000">9</font><font color="#000000">)</font> <font color="#434f54">&amp;&amp;</font> <font color="#000000">(</font><font color="#000000">AHourTens</font> <font color="#434f54">&lt;</font> <font color="#000000">2</font><font color="#000000">)</font><font color="#000000">)</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">AHourOnes</font> <font color="#434f54">=</font> <font color="#000000">0</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">AHourTens</font> <font color="#434f54">=</font> <font color="#000000">AHourTens</font> <font color="#434f54">+</font><font color="#000000">1</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+ &nbsp;&nbsp;&nbsp;
+ &nbsp;&nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">(</font><font color="#000000">AHourTens</font> <font color="#434f54">==</font><font color="#000000">2</font><font color="#000000">)</font> <font color="#434f54">&amp;&amp;</font> <font color="#000000">(</font><font color="#000000">AHourOnes</font> <font color="#434f54">==</font> <font color="#000000">4</font><font color="#000000">)</font><font color="#000000">)</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">AHourOnes</font> <font color="#434f54">=</font> <font color="#000000">0</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">AHourTens</font> <font color="#434f54">=</font> <font color="#000000">0</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+<font color="#434f54">&#47;&#47; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;24 hours mode increment - E</font>
+<font color="#434f54">&#47;&#47; -----------*</font>
+ &nbsp;&nbsp;&nbsp;
+<font color="#95a5a6">&#47;* &nbsp;&nbsp;&nbsp;</font>
+<font color="#95a5a6"> &nbsp;&nbsp;&nbsp;if(AHourOnes &gt;9)</font>
+<font color="#95a5a6"> &nbsp;&nbsp;&nbsp;{</font>
+<font color="#95a5a6"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AHourOnes = 0;</font>
+<font color="#95a5a6"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AHourTens = AHourTens +1;</font>
+<font color="#95a5a6"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if((AHourTens &gt;1) &amp;&amp; (A_TH_Not24_flag))</font>
+<font color="#95a5a6"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</font>
+<font color="#95a5a6"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AHourTens = 0;</font>
+<font color="#95a5a6"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</font>
+<font color="#95a5a6"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else</font>
+<font color="#95a5a6"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</font>
+<font color="#95a5a6"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(AHourTens &gt;2)</font>
+<font color="#95a5a6"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</font>
+<font color="#95a5a6"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AHourTens = 0;</font>
+<font color="#95a5a6"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</font>
+<font color="#95a5a6"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</font>
+<font color="#95a5a6"> &nbsp;&nbsp;&nbsp;}</font>
+<font color="#95a5a6">*&#47;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">temp</font> <font color="#434f54">=</font> <font color="#000000">(</font><font color="#000000">AHourTens</font> <font color="#434f54">&lt;&lt;</font> <font color="#000000">4</font><font color="#000000">)</font> <font color="#434f54">+</font> <font color="#000000">AHourOnes</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">A_TH_Not24_flag</font><font color="#000000">)</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#d35400">bitWrite</font><font color="#000000">(</font><font color="#000000">temp</font><font color="#434f54">,</font> <font color="#000000">5</font><font color="#434f54">,</font> <font color="#000000">A_PM_NotAM_flag</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+
+ &nbsp;&nbsp;&nbsp;<font color="#d35400">bitWrite</font><font color="#000000">(</font><font color="#000000">temp</font><font color="#434f54">,</font> <font color="#000000">6</font><font color="#434f54">,</font> <font color="#000000">A_TH_Not24_flag</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">I2C_TX</font><font color="#000000">(</font><font color="#000000">RTCDS1337</font><font color="#434f54">,</font><font color="#000000">RTC_ALARM1HOUR</font><font color="#434f54">,</font><font color="#000000">temp</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">break</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">}</font>
+
+<font color="#000000">}</font>
+
+<font color="#434f54">&#47;&#47;*******************************************************************************************************************</font>
+<font color="#434f54">&#47;&#47; &#09;&#09;&#09;&#09;&#09;&#09;&#09;&#09; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Toggle Twelve and &nbsp;Twenty Four hour time</font>
+<font color="#434f54">&#47;&#47;*******************************************************************************************************************</font>
+
+<font color="#00979c">void</font> <font color="#000000">TwelveTwentyFourConvert</font><font color="#000000">(</font><font color="#000000">)</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<font color="#000000">{</font>
+
+ &nbsp;<font color="#00979c">int</font> <font color="#000000">temphours</font> <font color="#434f54">=</font> <font color="#000000">0</font><font color="#000000">;</font>
+ &nbsp;<font color="#00979c">int</font> <font color="#000000">temp</font> <font color="#434f54">=</font> <font color="#000000">0</font><font color="#000000">;</font>
+
+ &nbsp;<font color="#000000">I2C_RX</font><font color="#000000">(</font><font color="#000000">RTCDS1337</font><font color="#434f54">,</font><font color="#000000">RTC_HOUR</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">HourOnes</font> <font color="#434f54">=</font> <font color="#000000">i2cData</font> <font color="#434f54">&amp;</font> <font color="#000000">B00001111</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; </font>
+
+ &nbsp;<font color="#434f54">&#47;&#47; &nbsp;TH_Not24_flag = bitRead(i2cData, 6); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#47;&#47; False on RTC when 24 mode selected</font>
+ &nbsp;<font color="#434f54">&#47;&#47; &nbsp;PM_NotAM_flag = bitRead(i2cData, 5);</font>
+
+ &nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">TH_Not24_flag</font><font color="#000000">)</font>
+ &nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">HourTens</font> <font color="#434f54">=</font> <font color="#000000">i2cData</font> <font color="#434f54">&amp;</font> <font color="#000000">B00010000</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; </font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">HourTens</font> <font color="#434f54">=</font> <font color="#000000">HourTens</font> <font color="#434f54">&gt;&gt;</font> <font color="#000000">4</font><font color="#000000">;</font>
+
+ &nbsp;<font color="#000000">}</font>
+ &nbsp;<font color="#5e6d03">else</font>
+ &nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">HourTens</font> <font color="#434f54">=</font> <font color="#000000">i2cData</font> <font color="#434f54">&amp;</font> <font color="#000000">B00110000</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; </font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">HourTens</font> <font color="#434f54">=</font> <font color="#000000">HourTens</font> <font color="#434f54">&gt;&gt;</font> <font color="#000000">4</font><font color="#000000">;</font>
+ &nbsp;<font color="#000000">}</font>
+
+ &nbsp;<font color="#000000">temphours</font> <font color="#434f54">=</font> <font color="#000000">HourOnes</font> <font color="#434f54">+</font> <font color="#000000">(</font><font color="#000000">HourTens</font><font color="#434f54">*</font><font color="#000000">10</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; 12 .... 1.2.3...12 or 0 ..1.2.3. ...23</font>
+
+ &nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">TH_Not24_flag</font> <font color="#434f54">!=</font> <font color="#000000">NewTimeFormate</font><font color="#000000">)</font>
+ &nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">NewTimeFormate</font><font color="#000000">)</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; NewTimeFormate is same formate as TH_Not24_flag where H is 12 and LOW is 24</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">{</font> 
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; ---------------- 24 -&gt; 12 &nbsp;&nbsp;&nbsp;</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Convert into 12 hour clock</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">temphours</font> <font color="#434f54">&gt;=</font> <font color="#000000">12</font><font color="#000000">)</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">PM_NotAM_flag</font> <font color="#434f54">=</font> <font color="#00979c">true</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; it is in the PM &nbsp;</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">temphours</font><font color="#434f54">&gt;</font> <font color="#000000">12</font><font color="#000000">)</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">temphours</font> <font color="#434f54">=</font> <font color="#000000">temphours</font> <font color="#434f54">-</font> <font color="#000000">12</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Convert from 13:00 .... 23:00 to 1:00 ... 11:00 [Go from 23:59 &#47; 13:00 to 12:00 to 1:00] ?</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#5e6d03">else</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">temphours</font> <font color="#434f54">=</font> <font color="#000000">temphours</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; do nothing it is 12:00</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#5e6d03">else</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">PM_NotAM_flag</font> <font color="#434f54">=</font> <font color="#00979c">false</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; it is in the AM - No other conversion needed &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">temphours</font> <font color="#434f54">==</font> <font color="#000000">0</font><font color="#000000">)</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">temphours</font> <font color="#434f54">=</font> <font color="#000000">12</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">}</font> 
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">else</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; ---------------- 12 -&gt; 24 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#47;&#47; Convert into 24 hour clock</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">{</font> 
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">(</font><font color="#000000">PM_NotAM_flag</font> <font color="#434f54">==</font> <font color="#00979c">false</font><font color="#000000">)</font> <font color="#434f54">&amp;&amp;</font> <font color="#000000">(</font><font color="#000000">temphours</font> <font color="#434f54">==</font> <font color="#000000">12</font><font color="#000000">)</font><font color="#000000">)</font> &nbsp;<font color="#434f54">&#47;&#47; AM only check for 00 hours</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">temphours</font> <font color="#434f54">=</font> <font color="#000000">0</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">PM_NotAM_flag</font> <font color="#434f54">==</font> <font color="#00979c">true</font><font color="#000000">)</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">{</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; PM conversion</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">temphours</font> <font color="#434f54">!=</font> <font color="#000000">12</font><font color="#000000">)</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Leave 12 as 12 in 24h time</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">temphours</font> <font color="#434f54">=</font> <font color="#000000">temphours</font> <font color="#434f54">+</font> <font color="#000000">12</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+ &nbsp;&nbsp;&nbsp;
+ &nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; Common finish conversion section</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">TH_Not24_flag</font> <font color="#434f54">=</font> <font color="#000000">NewTimeFormate</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">HourTens</font> <font color="#434f54">=</font> <font color="#000000">temphours</font> <font color="#434f54">&#47;</font> <font color="#000000">10</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">HourOnes</font> <font color="#434f54">=</font> <font color="#000000">temphours</font> <font color="#434f54">%</font> <font color="#000000">10</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;
+ &nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; ---</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">temp</font> <font color="#434f54">=</font> <font color="#000000">(</font><font color="#000000">HourTens</font> <font color="#434f54">&lt;&lt;</font> <font color="#000000">4</font><font color="#000000">)</font> <font color="#434f54">+</font> <font color="#000000">HourOnes</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font><font color="#000000">(</font><font color="#000000">TH_Not24_flag</font><font color="#000000">)</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#d35400">bitWrite</font><font color="#000000">(</font><font color="#000000">temp</font><font color="#434f54">,</font> <font color="#000000">5</font><font color="#434f54">,</font> <font color="#000000">PM_NotAM_flag</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+
+ &nbsp;&nbsp;&nbsp;<font color="#d35400">bitWrite</font><font color="#000000">(</font><font color="#000000">temp</font><font color="#434f54">,</font> <font color="#000000">6</font><font color="#434f54">,</font> <font color="#000000">TH_Not24_flag</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;<font color="#000000">I2C_TX</font><font color="#000000">(</font><font color="#000000">RTCDS1337</font><font color="#434f54">,</font><font color="#000000">RTC_HOUR</font><font color="#434f54">,</font><font color="#000000">temp</font><font color="#000000">)</font><font color="#000000">;</font>
+ &nbsp;&nbsp;&nbsp;
+ &nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; ---</font>
+ &nbsp;&nbsp;&nbsp;
+ &nbsp;<font color="#000000">}</font>
+
+
+<font color="#000000">}</font>
+
+</pre>
